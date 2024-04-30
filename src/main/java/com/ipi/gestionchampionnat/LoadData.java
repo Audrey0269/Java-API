@@ -38,8 +38,8 @@ public class LoadData {
                 //Créer un objet creationDate
                 LocalDate creationDateTeam = LocalDate.parse("2024-04-20");
                 //Créer une team
-                Team team1 = new Team("Team Bleu", creationDateTeam, null, null);
-                Team team2 = new Team("Team Rouge", creationDateTeam, null, null);
+                Team team1 = new Team("Team Bleu", creationDateTeam);
+                Team team2 = new Team("Team Rouge", creationDateTeam);
                 //Enregistrer la team dans la BDD
                 teamRepository.save(team1);
                 teamRepository.save(team2);
@@ -50,7 +50,7 @@ public class LoadData {
                 //Créer un objet creationDate
                 LocalDate endDate = LocalDate.parse("2024-06-20");
                 //Créer un championShip
-                Championship championship1 = new Championship("ChampionShip One", startDate, endDate, 30L, 9L, 4L, null);
+                Championship championship1 = new Championship("ChampionShip One", startDate, endDate, 30L, 9L, 4L);
                 //Associer les équipes au championnat
                 championship1.getTeams().add(team1);
                 championship1.getTeams().add(team2);
@@ -59,7 +59,7 @@ public class LoadData {
 
                 //___DAY___L
                 //Créer un day
-                Day day1 = new Day("First Day", championship1, null);
+                Day day1 = new Day("First Day", championship1);
                 //Enregistrer day dans la BDD
                 dayRepository.save(day1);
 

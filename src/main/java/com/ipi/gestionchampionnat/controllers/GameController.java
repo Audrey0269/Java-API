@@ -8,6 +8,7 @@ import com.ipi.gestionchampionnat.repository.DayRepository;
 import com.ipi.gestionchampionnat.repository.GameRepository;
 import com.ipi.gestionchampionnat.repository.TeamRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -79,20 +80,29 @@ public class GameController {
 
 
     //Create game for day
-    @PostMapping(value = "/{dayId}")
-    public ResponseEntity<String> createGameForDay(@PathVariable Long dayId, @RequestBody Game game) {
-        // Vérifie si la journée existe
+    @PostMapping(value = "/day/{dayId}/team1/{team1Id}/team2/{team2Id}")
+    public ResponseEntity<String> createGameForDay(@PathVariable Long dayId, @PathVariable Long team1Id, @PathVariable Long team2Id, @RequestBody Game game) {
+        // Vérifier si day existe
         if (!dayRepository.existsById(dayId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Day non trouvée");
         }
 
-        // Récupérer day
+        // Vérifier si team existent
+        if (!teamRepository.existsById(team1Id) || !teamRepository.existsById(team2Id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team non trouvées");
+        }
+
+        // Récupérer day et team associées
         Day day = dayRepository.findById(dayId).orElse(null);
+        Team team1 = teamRepository.findById(team1Id).orElse(null);
+        Team team2 = teamRepository.findById(team2Id).orElse(null);
 
-        // Associer la journée au jeu
+        // Associer day et team au game
         game.setDay(day);
+        game.setTeam1(team1);
+        game.setTeam2(team2);
 
-        // Sauvegarder le résultat de jeu dans la base de données
+        // Save
         gameRepository.save(game);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Game créée");
@@ -100,22 +110,21 @@ public class GameController {
 
 
     //Update game
-    @PutMapping(value = "/{game}")
-    public ResponseEntity<Game> updateGame(@PathVariable(name = "game", required = false) Game game, @Valid @RequestBody Game gameUpdate, BindingResult bindingResult) {
-        if (game == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Game introuvable"
-            );
-        } else {
-            if (bindingResult.hasErrors()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, bindingResult.toString());
-            } else {
-                gameUpdate.setId(game.getId());
-                gameRepository.save(gameUpdate);
-                return new ResponseEntity<>(gameUpdate, HttpStatus.CREATED);
-            }
-        }
+    @PutMapping("/{gameId}")
+    public ResponseEntity<Game> updateGame(@PathVariable("gameId") Long id, @RequestBody Game gameUpdate) {
+        Game existingGame = gameRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game inexistant"));
+
+        // Mise à jour des données
+        existingGame.setTeam1Point(gameUpdate.getTeam1Point());
+        existingGame.setTeam2Point(gameUpdate.getTeam2Point());
+
+        // Save game
+        Game updatedGame = gameRepository.save(existingGame);
+        return new ResponseEntity<>(updatedGame, HttpStatus.OK);
     }
+
+
 
     //Delete user
     @DeleteMapping(value = "/{game}")

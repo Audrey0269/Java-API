@@ -32,10 +32,9 @@ public class Day {
 
     }
 
-    public Day(String number, Championship championship, List<Game> games) {
+    public Day(String number, Championship championship) {
         this.number = number;
         this.championship = championship;
-        this.games = games;
     }
 
     public Long getId() {

@@ -46,11 +46,9 @@ public class Team {
 
     }
 
-    public Team(String name, LocalDate creationDate, List<Game> gameTeam1, List<Game> gameTeam2) {
+    public Team(String name, LocalDate creationDate) {
         this.name = name;
         this.creationDate = creationDate;
-        this.gameTeam1 = gameTeam1;
-        this.gameTeam2 = gameTeam2;
     }
 
     public Long getId() {

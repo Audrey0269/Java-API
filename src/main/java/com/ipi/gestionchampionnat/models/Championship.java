@@ -64,14 +64,13 @@ public class Championship {
 
     }
 
-    public Championship(String name, LocalDate startDate, LocalDate endDate, Long wonPoint, Long lostPoint, Long drawPoint, List<Day> day) {
+    public Championship(String name, LocalDate startDate, LocalDate endDate, Long wonPoint, Long lostPoint, Long drawPoint) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.wonPoint = wonPoint;
         this.lostPoint = lostPoint;
         this.drawPoint = drawPoint;
-        this.day = day;
     }
 
     public Long getId() {
